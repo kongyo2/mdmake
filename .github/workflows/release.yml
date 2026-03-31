@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "リリースタグ名 (例: v1.0.0)"
+        required: true
+        type: string
 
 jobs:
   release:
@@ -36,10 +42,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: "mdmake ${{ github.ref_name }}"
+          tagName: ${{ inputs.tag_name || github.ref_name }}
+          releaseName: "mdmake ${{ inputs.tag_name || github.ref_name }}"
           releaseBody: |
-            mdmake ${{ github.ref_name }} をリリースしました。
+            mdmake ${{ inputs.tag_name || github.ref_name }} をリリースしました。
 
             ## インストール
             - **MSI**: Windowsインストーラー形式
